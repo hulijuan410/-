@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>flexbox</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="div" style="width:500px;height:100px;background:blue;"></div>
+    <button>click</button>
+    <input type="text"/>
+    <script src="./test.js"></script>
+    <script>
+    // var getPageTags = function(){
+    //     // let tags = document.getElementsByTagName('*');
+    //     // console.log(tags);
+    //     // console.log([...tags]);
+    //     // let res = new Set([...tags]);
+    //     // console.log([...res]);
+    //     // console.log(res);
+    //     let result = [...new Set([...document.getElementsByTagName('*')])];
+    //     result.map(item => {
+    //         console.log(item.nodeName)
+    //     })
+    // }
+    // const getPageTags = () => [...new Set([...document.getElementsByTagName('*')].map((value) => {console.log(value.nodeName)}))]
+    // getPageTags();
+        //图片异步加载
+//         function loadImgAsync(url){
+//             return new Promise(function(resolve,reject){
+//                 const img = new Image();
+
+//                 img.onload = function(){
+//                     resolve(img);
+//                 }
+
+//                 img.onerror = function(){
+//                     reject(new Error('Could not load image at ' + url));
+//                 }
+//                 img.src = url;
+//             })
+//         }
+//         loadImgAsync('http://img03.sogoucdn.com/v2/thumb/resize/w/278/h/278/retype/q/90/?appid=100140022&url=https%3A%2F%2Fimg.alicdn.com%2Fimgextra%2Fi4%2F3074089132%2FTB1uMyeavMTUeJjSZFKXXagopXa_%21%210-item_pic.jpg').then(function(img){
+//             console.log(img);
+//         })
+
+//         //ajax
+//         function getJson(url){
+//             //new XMLHttpRequest -> client.open() -> onreadystatechange -> responsetyle -> setrequestheader -> send
+//             return new Promise(function(resolve,reject){
+//                 const client = new XMLHttpRequest();
+//                 client.open('GET',url);
+//                 client.onreadystatechange = function(){
+//                     if(this.readyState !== 4){
+//                         return;
+//                     }
+//                     if(this.status === 200){
+//                         resolve(this.response);
+//                     }else{
+//                         reject(new Error(this.statusText));
+//                     }
+//                 };
+//                 client.responseType = 'json';
+//                 client.setRequestHeader("Accept", "application/json");
+//                 client.send();
+//             })
+//         }
+//         // getJson('http://glb.mai.sogou.com/tejia/m/couponApi.php?type=salelist&page=1&platform=pc&priceType=0&cateid=0').then(function(response){
+//         //     console.log(response);
+//         // })
+
+// //async的return数据作为then的参数
+//         async function f(){
+//             return 'hello world';
+//         }
+//         f().then(v => console.log(v))
+// //
+//         async function getTitle(url){
+//             let response = await fetch(url);
+//             // console.log('response',response);
+//             let html = await response.text();
+//             // console.log('html',html);
+//             return html.match(/<title>([\s\S]+)<\/title>/i)[1];
+//         }
+//         getTitle('https://tc39.github.io/ecma262/').then(v => console.log(v));
+
+//函数防抖：事件被触发n秒后再执行，如果在这n秒内又被触发，则重新计时。因此在一直触发事件就一直清除事件回调，因为在等一个>=n的时间间隔，在这个时间间隔内才能执行到回调函数里
+//一直触发事件就一直清除事件回调（因为触发事件的时间间隔没有超过200ms所以被清除掉了），
+//直到有一个时间间隔200ms以后再触发事件，setTimeout中的事件才能执行
+        function debounce(fn,delay){
+            var timeout;
+            return function(e){
+                var context = this,args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(function(e){
+                    fn.apply(context,args);//回调函数里
+                },delay)
+            }
+        }
+
+        var validate = debounce(function(e){
+            console.log(e.target.value);
+        },200)
+
+        document.querySelector('input').addEventListener('keyup',validate,false);
+//函数节流：一个单位时间内只能触发一次（对应if），如果在这个单位时间内触发多次则只执行一次，并且触发完了之后还会执行一次（对应else）
+        function throttle(fn,delay){
+            var timer,start = new Date();
+            return function(e){
+                var args = arguments,context = this;
+                var cur = new Date();
+                clearTimeout(timer);
+                if(cur-start > delay){//事件不断触发，没delay时间段触发一次
+                    fn.apply(context,args);
+                    start = cur;
+                }else{
+                    timer = setTimeout(function(){//事件停止触发最后还有再有一次
+                        fn.apply(context,args);
+                    },delay);
+                }
+            }
+        }
+        var testThrottle = throttle(function(e){
+            console.log(e.pageX,e.pageY);
+        },1000);
+        document.querySelector('.div').addEventListener('mousemove',testThrottle,false);
+    </script>
+</body>
+</html>
